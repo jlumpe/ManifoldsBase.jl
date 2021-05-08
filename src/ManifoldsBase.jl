@@ -15,7 +15,7 @@ import Base:
     +,
     -,
     *
-import LinearAlgebra: dot, norm, det, cross, I, UniformScaling, Diagonal
+import LinearAlgebra: dot, norm, normalize, normalize!, det, cross, I, UniformScaling, Diagonal
 
 import Markdown: @doc_str
 using LinearAlgebra
@@ -668,8 +668,28 @@ end
 
 Compute the norm of tangent vector `X` at point `p` from a [`Manifold`](@ref) `M`.
 By default this is computed using [`inner`](@ref).
+
+See also: [`normalize`](@ref)
 """
 norm(M::Manifold, p, X) = sqrt(real(inner(M, p, X, X)))
+
+"""
+    normalize(M::Manifold, p, X)
+
+Normalize the tangent vector `X` at point `p` of a [`Manifold`](@ref) `M` so that
+it has unit norm.
+
+See also: [`norm`](@ref), [`normalize!`](@ref)
+"""
+normalize(M::Manifold, p, X) = normalize!(M, p, copy(X))
+
+"""
+    normalize!(M::Manifold, p, X)
+
+[`normalize`](@ref) the tangent vector `X` at point `p` of a [`Manifold`](@ref) `M`,
+modifying it in-place.
+"""
+normalize!(M::Manifold, p, X) = rmul!(X, inv(norm(M, p, X)))
 
 """
     number_eltype(x)
